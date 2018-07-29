@@ -100,18 +100,18 @@ $(document).keydown(
 
 });
 </script>
-<h2><strong>ZOHO BANK</strong></h2>
+
 <div class="vertical-menu">
-  <a id="menu" href="AdminPage.jsp" class="active" style="text-align: center;">MENU</a>
+  <a id="menu" href="#" class="active" style="text-align: center;">MENU</a>
   <a id="Branch" href="Branch.jsp">Branch</a>
   
    <a id="AddCustomer" href="AddCustomer.jsp">Add Customer</a>
-   <a id="AddCustomerPassword" href="AddCustomerPassword.jsp">Set Customer Password</a>
+   <a id="AddCustomerPassword" href="AddCustomerPassword.jsp">Reset Customer Password</a>
    <a id="ListAllCustomers" href="ListAllCustomers.jsp">List All Customers</a>
-   <a id="Top5Customers" href="ShowTop5Customer.jsp">Top 5 Customers</a>
+   <a id="Top5Customers" href="TopCustomers.jsp">Top 5 Customers</a>
     
-  <a id="CreateAccount" href="CreateAccount.jsp" value="" >Create Customer Account</a>
-  <a href="#" value="" >Logout</a>
+  <a id="CreateAccount" href="CreateAccount.jsp" value="" >Add Customer Account</a>
+  <a href="AdminLogoutController">Logout</a>
 </div>
 </body>
 </html>

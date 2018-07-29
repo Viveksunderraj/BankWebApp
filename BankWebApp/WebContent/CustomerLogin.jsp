@@ -10,6 +10,9 @@
 <body>
 <h2><strong>ZOHO BANK</strong></h2>
 
+
+
+
 <div class="login-page">
 	<h3><strong>Customer Login</strong></h3>
   <div class="form">
@@ -17,6 +20,8 @@
       <input type="text" placeholder="userid" name="userid"/>
       <input type="password" placeholder="password" name="password"/>
       <input type="submit" value="Login"/>
+      
+      <div style="color:red">${message}${param.message}</div>
     </form>
   </div>
 </div>

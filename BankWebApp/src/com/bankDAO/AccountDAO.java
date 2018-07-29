@@ -11,6 +11,7 @@ import com.bank.Account;
 import com.bank.AccountLookup;
 import com.bank.BankApplication;
 import com.bank.MenuMethods;
+import com.bank.TopCustomers;
 
 public class AccountDAO {
 	
@@ -69,13 +70,13 @@ public class AccountDAO {
 		String sql = null;
 		
 		if(accountType == MenuMethods.GetAccountType.SAVINGS_AND_CURRENT) {
-			sql = "SELECT acc.AccountNumber, act.AccountName, acc.AccountBalance, acc.AccountType, acc.BranchID, acc.CustomerID, branch.BranchName from accounts as acc INNER JOIN accountType as act ON acc.accountType=act.accountType INNER JOIN branchMaster as branch ON acc.BranchID=branch.branchID where (CustomerID=?) and (acc.BranchID=?) and (acc.AccountType=1 or acc.AccountType=2)";
+			sql = "SELECT acc.AccountNumber, act.AccountName, act.MinimumBalance, acc.AccountBalance, acc.AccountType, acc.BranchID, acc.CustomerID, branch.BranchName from accounts as acc INNER JOIN accountType as act ON acc.accountType=act.accountType INNER JOIN branchMaster as branch ON acc.BranchID=branch.branchID where (CustomerID=?) and (acc.BranchID=?) and (acc.AccountType=1 or acc.AccountType=2)";
 		}
 		else if(accountType == MenuMethods.GetAccountType.LOAN_ACCOUNT) {
-			sql = "SELECT acc.AccountNumber, act.AccountName, acc.AccountBalance, acc.AccountType, acc.BranchID, acc.CustomerID, branch.BranchName from accounts as acc INNER JOIN accountType as act ON acc.accountType=act.accountType INNER JOIN branchMaster as branch ON acc.BranchID=branch.branchID where (CustomerID=?) and (acc.BranchID=?) and (acc.AccountType=3)";
+			sql = "SELECT acc.AccountNumber, act.AccountName, act.MinimumBalance, acc.AccountBalance, acc.AccountType, acc.BranchID, acc.CustomerID, branch.BranchName from accounts as acc INNER JOIN accountType as act ON acc.accountType=act.accountType INNER JOIN branchMaster as branch ON acc.BranchID=branch.branchID where (CustomerID=?) and (acc.BranchID=?) and (acc.AccountType=3)";
 		}
 		else if(accountType == MenuMethods.GetAccountType.ALL_ACCOUNTS) {
-			sql = "SELECT acc.AccountNumber, act.AccountName, acc.AccountBalance, acc.AccountType, acc.BranchID, acc.CustomerID, branch.BranchName from accounts as acc INNER JOIN accountType as act ON acc.accountType=act.accountType INNER JOIN branchMaster as branch ON acc.BranchID=branch.branchID where (CustomerID=?) and (acc.BranchID=?)";
+			sql = "SELECT acc.AccountNumber, act.AccountName, act.MinimumBalance, acc.AccountBalance, acc.AccountType, acc.BranchID, acc.CustomerID, branch.BranchName from accounts as acc INNER JOIN accountType as act ON acc.accountType=act.accountType INNER JOIN branchMaster as branch ON acc.BranchID=branch.branchID where (CustomerID=?) and (acc.BranchID=?)";
 		}
 		
 		ArrayList<Account> accountList = new ArrayList<Account>();
@@ -102,6 +103,43 @@ public class AccountDAO {
 		return null;
 	}
 	
+	public  static ArrayList<Account> getAccountsForCustomer(int customerID, MenuMethods.GetAccountType accountType) {
+		
+		String sql = null;
+		
+		if(accountType == MenuMethods.GetAccountType.SAVINGS_AND_CURRENT) {
+			sql = "SELECT acc.AccountNumber, act.AccountName, act.MinimumBalance, acc.AccountBalance, acc.AccountType, acc.BranchID, acc.CustomerID, branch.BranchName from accounts as acc INNER JOIN accountType as act ON acc.accountType=act.accountType INNER JOIN branchMaster as branch ON acc.BranchID=branch.branchID where (CustomerID=?) and (acc.AccountType=1 or acc.AccountType=2)";
+		}
+		else if(accountType == MenuMethods.GetAccountType.LOAN_ACCOUNT) {
+			sql = "SELECT acc.AccountNumber, act.AccountName, act.MinimumBalance, acc.AccountBalance, acc.AccountType, acc.BranchID, acc.CustomerID, branch.BranchName from accounts as acc INNER JOIN accountType as act ON acc.accountType=act.accountType INNER JOIN branchMaster as branch ON acc.BranchID=branch.branchID where (CustomerID=?) and (acc.AccountType=3)";
+		}
+		else if(accountType == MenuMethods.GetAccountType.ALL_ACCOUNTS) {
+			sql = "SELECT acc.AccountNumber, act.AccountName, act.MinimumBalance, acc.AccountBalance, acc.AccountType, acc.BranchID, acc.CustomerID, branch.BranchName from accounts as acc INNER JOIN accountType as act ON acc.accountType=act.accountType INNER JOIN branchMaster as branch ON acc.BranchID=branch.branchID where (CustomerID=?)";
+		}
+		
+		ArrayList<Account> accountList = new ArrayList<Account>();
+		
+		try(Connection con = BankApplication.getConnection();
+				PreparedStatement pstmt =  con.prepareStatement(sql);) {
+			
+			pstmt.setInt(1, customerID);
+			
+			try(ResultSet rs = pstmt.executeQuery()){
+			while(rs.next()) {
+				
+				Account account = extractAccountFromReselutSet(rs);
+				accountList.add(account);
+			}
+			return accountList;
+			}
+		}
+		catch(SQLException ex)
+		{
+			System.out.println(ex.getMessage());
+		}
+		return null;
+	}
+	
 	public static Account extractAccountFromReselutSet(ResultSet rs) throws SQLException {
 		Account account = new Account();
 		account.setAccountNumber(rs.getInt("AccountNumber"));
@@ -111,13 +149,14 @@ public class AccountDAO {
 		account.setBranchName(rs.getString("BranchName"));
 		account.setBranchID(rs.getInt("BranchID"));
 		account.setCustomerID(rs.getInt("CustomerID"));
+		account.setMinimumBalance(rs.getDouble("MinimumBalance"));
 		return account;
 		
 	}
 	
 	
 	public static ArrayList<Account> getAccountsForCustomer(int customerID, int branchID){
-		String sql = "SELECT acc.AccountNumber, act.AccountName, acc.AccountBalance, acc.AccountType, acc.BranchID, acc.CustomerID, branch.BranchName from accounts as acc INNER JOIN accountType as act ON acc.accountType=act.accountType INNER JOIN branchMaster as branch ON acc.BranchID=branch.branchID where (CustomerID=?) and (acc.BranchID=?)";
+		String sql = "SELECT acc.AccountNumber, act.AccountName, act.MinimumBalance, acc.AccountBalance, acc.AccountType, acc.BranchID, acc.CustomerID, branch.BranchName from accounts as acc INNER JOIN accountType as act ON acc.accountType=act.accountType INNER JOIN branchMaster as branch ON acc.BranchID=branch.branchID where (CustomerID=?) and (acc.BranchID=?)";
 		ArrayList<Account> accountList = new ArrayList<Account>();
 		
 		try(Connection con = BankApplication.getConnection();
@@ -287,6 +326,33 @@ public class AccountDAO {
 		}
 		return accountType;
 		
+	}
+	
+	public static ArrayList<TopCustomers> getTopCustomers() {
+		
+		String sql = "select sum(accountBalance) as sum, accounts.customerid, concat(cust.customerFName,' ',cust.customerLName) as CustomerName from accounts INNER JOIN customerMaster as cust ON accounts.customerid=cust.customerid where accounttype not in (3) group by accounts.customerid order by sum desc";
+		
+		try(Connection con = BankApplication.getConnection();
+				Statement stmt = con.createStatement();
+				ResultSet rs = stmt.executeQuery(sql);) {		
+			
+			ArrayList<TopCustomers> topCustomers = new ArrayList<>();
+			while(rs.next()) {
+				TopCustomers cust = new TopCustomers();
+				//System.out.println(rs.getString("customerName"));
+				cust.setAccountBalance(rs.getDouble("sum"));
+				cust.setCustomerName(rs.getString("customerName"));
+				cust.setCustomerID(rs.getInt("customerid"));
+				
+				topCustomers.add(cust);
+			}
+			return topCustomers;
+		} 
+		catch(Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getClass().getName()+": "+e.getMessage());
+		}
+		return null;
 	}
 	
 }

@@ -14,10 +14,11 @@ import com.bank.Customer;
 
 public class CustomerDAO {
 	
-	public boolean addCustomer(Customer newCustomer) {
+	public int addCustomer(Customer newCustomer) {
 		
 		String sql = "insert into CustomerMaster(CustomerID, CustomerFName, CustomerLName, CustomerAddress, PhoneNumber, DateOfBirth) values(null,?,?,?,?,?)";
 		int affectedRows = 0;
+		int customerID = 0;
 		
 		try(Connection con = BankApplication.getConnection();
 			PreparedStatement pstmt =  con.prepareStatement(sql);) {
@@ -28,16 +29,21 @@ public class CustomerDAO {
 			pstmt.setString(4, newCustomer.getPhoneNumber());
 			pstmt.setString(5, newCustomer.getDateOfBirth());
 			affectedRows = pstmt.executeUpdate();
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT LAST_INSERT_ID() as CustomerID");
+			rs.next();
+			customerID = rs.getInt("CustomerID");
 			
 			if(affectedRows == 1) {
-				return true;
+				
+				return customerID;
 			}
 		}
 		catch(SQLException ex)
 		{
 			System.out.println(ex.getMessage());
 		}
-		return false;
+		return customerID;
 	}
 	
 	

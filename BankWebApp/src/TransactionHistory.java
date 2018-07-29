@@ -24,14 +24,15 @@ public class TransactionHistory extends HttpServlet {
 		
 		HttpSession session = request.getSession();
 		String customerID = (String)session.getAttribute("customerid");
-		String branchID = (String)session.getAttribute("branchid");
 		String accountNumber = request.getParameter("Accountnumber");
+		
+		//System.out.println(branchID + " " + customerID);
 		
 		TransactionDAO transactiondao = new TransactionDAO();
 		
 		TransactionReportHeader transactionReportHeader = transactiondao.getTransactionHeader(Integer.parseInt(accountNumber));
 		
-		ArrayList<Transaction> transactionHistory = transactiondao.getTransactionHistory(Integer.parseInt(customerID), Integer.parseInt(accountNumber), Integer.parseInt(branchID));
+		ArrayList<Transaction> transactionHistory = transactiondao.getTransactionHistory(Integer.parseInt(customerID), Integer.parseInt(accountNumber));
 		
 		
 		request.setAttribute("transactionReportHeader", transactionReportHeader);

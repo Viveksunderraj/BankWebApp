@@ -3,7 +3,8 @@ package com.bank;
 public class Beneficiary {
 	
 	private int customerID;
-	private String bankName;
+	private int beneficiaryType;
+	private String beneficiaryTypeName;
 	private int beneficiaryAccountNumber;
 	private String IFSCcode;
 	
@@ -12,11 +13,11 @@ public class Beneficiary {
 		super();
 	}
 
-	public Beneficiary(int customerID, String bankName, int beneficiaryAccountNumber, String iFSCcode) {
+	public Beneficiary(int customerID, int beneficiaryType, int beneficiaryAccountNumber, String iFSCcode) {
 		this.customerID = customerID;
-		this.bankName = bankName;
+		this.beneficiaryType = beneficiaryType;
 		this.beneficiaryAccountNumber = beneficiaryAccountNumber;
-		IFSCcode = iFSCcode;
+		this.IFSCcode = iFSCcode;
 	}
 
 	public int getCustomerID() {
@@ -27,12 +28,20 @@ public class Beneficiary {
 		this.customerID = customerID;
 	}
 
-	public String getBankName() {
-		return bankName;
+	public int getBeneficiaryType() {
+		return beneficiaryType;
+	}
+	
+	public String getBeneficiaryTypeName() {
+		return beneficiaryTypeName;
 	}
 
-	public void setBankName(String bankName) {
-		this.bankName = bankName;
+	public void setBeneficiaryTypeName(String beneficiaryTypeName) {
+		this.beneficiaryTypeName = beneficiaryTypeName;
+	}
+
+	public void setBeneficiaryType(int beneficiaryType) {
+		this.beneficiaryType = beneficiaryType;
 	}
 
 	public int getBeneficiaryAccountNumber() {
@@ -49,15 +58,6 @@ public class Beneficiary {
 
 	public void setIFSCcode(String iFSCcode) {
 		IFSCcode = iFSCcode;
-	}
-
-	@Override
-	public String toString() {
-		return "Beneficiary [\nCustomerID = " + customerID + ",\nBank Name = " + bankName + ",\nBeneficiary AccountNumber = "
-				+ beneficiaryAccountNumber + ",\nIFSCcode = " + IFSCcode + "]";
-	}
-	
-	
-	
+	}	
 
 }

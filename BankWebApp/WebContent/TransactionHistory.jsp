@@ -3,8 +3,10 @@
 <!DOCTYPE html>
 <html>  
 <head>  
+<meta charset="UTF-8">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">  
 <title>View Users</title>  
+
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -28,6 +30,7 @@ h3
   background: #0b63ad; /* fallback for old browsers */
   font-family: "Roboto", sans-serif;
 }
+
  
 </style>
 </head>  
@@ -36,7 +39,112 @@ h3
 $(document).ready(function(){
 	$('a').removeClass('active');
 	$('#TransactionHistory').addClass('active');
+
+	$( "#fromdate" ).datepicker({
+		dateFormat: 'yy-mm-dd',
+        autoclose: true,
+        maxDate : new Date(),
+        changeYear: true,
+        onSelect: function(date) {
+            $("#todate").datepicker('option', 'minDate', date);
+          }
+	});	
+	var fromDate=0;
+	//alert('hi');
+	$("#fromdate").on('change',function(){
+         fromDate = $(this).val();
+         
+	});
+	$( "#todate" ).datepicker({
+		dateFormat: 'yy-mm-dd',
+        autoclose: true,
+        changeYear: true,
+        maxDate : new Date()
+	});	
 });
+
+function setSelectedIndex(s, v) {
+
+    for ( var i = 0; i < s.options.length; i++ ) {
+        if ( s.options[i].value == v ) {
+            s.options[i].selected = true;
+            return;
+        }
+    }
+}
+
+
+function showDateFilter() {
+	
+	
+	var fromDate = $('#fromdate').val();
+	var toDate = $('#todate').val();
+	var accountNumber = $('#accountNumber').val();
+	var url = "TransactionHistoryDateWise.jsp?fromDate="+fromDate+"&toDate="+toDate+"&accountNumber="+accountNumber;
+	
+	if (fromDate == "" || toDate == "") {
+        document.getElementById("txtHint").innerHTML = "";
+        return;
+    }
+	
+	if(window.XMLHttpRequest){  
+		request = new XMLHttpRequest();  
+		}  
+		else if(window.ActiveXObject){  
+		request = new ActiveXObject("Microsoft.XMLHTTP");  
+		}  
+		  
+		try  
+		{  
+		request.onreadystatechange = getInfo;  
+		request.open("GET",url,true);  
+		request.send();  
+		}  
+		catch(e)  
+		{  
+		alert("Unable to connect to server");  
+		}  
+ }
+	
+
+function showAccount(accountnumber) {
+    	
+    	
+    var url = "ShowTransactionHistory.jsp?val="+accountnumber;
+    
+    if (accountnumber == "") {
+        document.getElementById("txtHint").innerHTML = "";
+        return;
+    }
+    $('#fromdate').val("");
+    $('#todate').val("");
+    
+	if(window.XMLHttpRequest){  
+		request = new XMLHttpRequest();  
+		}  
+		else if(window.ActiveXObject){  
+		request = new ActiveXObject("Microsoft.XMLHTTP");  
+		}  
+		  
+		try  
+		{  
+		request.onreadystatechange = getInfo;  
+		request.open("GET",url,true);  
+		request.send();  
+		}  
+		catch(e)  
+		{  
+		alert("Unable to connect to server");  
+		}  
+ }
+
+function getInfo(){  
+	if(request.readyState==4){  
+	var val=request.responseText;  
+	document.getElementById("txtHint").innerHTML = val;
+	}  
+}  
+
 </script>
   
     <div class="row">
@@ -46,7 +154,6 @@ $(document).ready(function(){
   	
   	<div class="col-9">
   	<div class="row">
-  		<jsp:include page="CustomerHeader.jsp" /> 
   	</div>
   
   <div class="row">
@@ -56,10 +163,15 @@ $(document).ready(function(){
  <%
 String customerid=(String)session.getAttribute("customerid");
 String branchid=(String)session.getAttribute("branchid");
-ArrayList<Account> accounts = AccountDAO.getAccountsForCustomer(Integer.parseInt(customerid), Integer.parseInt(branchid), MenuMethods.GetAccountType.ALL_ACCOUNTS);  
-request.setAttribute("accounts",accounts);  
+ArrayList<Account> accounts = AccountDAO.getAccountsForCustomer(Integer.parseInt(customerid), MenuMethods.GetAccountType.ALL_ACCOUNTS);  
+
+TransactionDAO transactiondao = new TransactionDAO();
+ArrayList<Transaction> transactionHistory = transactiondao.getTransactionHistory(Integer.parseInt(customerid), accounts.get(0).getAccountNumber());
+
+request.setAttribute("transactionHistory", transactionHistory);
+request.setAttribute("accounts",accounts);
 %>  
-	<form action="TransactionHistory" method="get">
+	<form>
 	<br><br><h3>TRANSACTION HISTORY</h3><br>
 	
 	<div class="row">
@@ -67,7 +179,7 @@ request.setAttribute("accounts",accounts);
 			<p>Select An Account : </p>
 		</div>
 		<div class="col-6">
-			<select name="Accountnumber">
+			<select name="Accountnumber" id="accountNumber" onchange="showAccount(this.value)">
 				<c:forEach items="${accounts}" var="account"> 
 					<option value="${account.getAccountNumber()}">${account.getAccountNumber()}-${account.getAccountName()}</option><br><br>
 				</c:forEach>
@@ -75,14 +187,32 @@ request.setAttribute("accounts",accounts);
 		</div>
 	</div>
 	
+	<div class="row">
+		<div class="col-6">
+			<p>Select From Date : </p>
+		</div>
+		<div class="col-6">
+			<input type="text" name="date" id="fromdate" disable="true">
+		</div>
+	</div>
 	
-    <input type="submit" value="Show Transaction History"/>
-    
+	<div class="row">
+		<div class="col-6">
+			<p>Select To Date : </p>
+		</div>
+		<div class="col-6">
+			<input type="text" name="todate" id="todate" disable="true">
+		</div>
+	</div>
+	
+	<input type="button" name="Filter" value="Filter" onclick="showDateFilter()" >
+
+	<br><br><br>
     </form><br>
 	
 	
-	
-	<table border="2" width="150%" style="color:white">
+	<div id="txtHint">
+	<table id="myTable" border="2" width="150%" style="color:white">
  	<tr><th>DATE AND TIME</th><th>REFERENCE NUMBER</th><th>TRANSACTION TYPE</th><th>NARRATION</th><th>TRANSACTION AMOUNT</th><th>CLOSING BALANCE</th></tr>  
   	<c:forEach items="${transactionHistory}" var="transaction">
 	  	<tr>
@@ -94,9 +224,8 @@ request.setAttribute("accounts",accounts);
 			<td>${transaction.getAccountBalance()}</td>
 	  	</tr>
  	</c:forEach>
-</table> 
-	
- 
+	</table> 
+	</div> 
   </div>
   </div>
 </div>

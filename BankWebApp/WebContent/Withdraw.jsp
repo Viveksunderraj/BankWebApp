@@ -40,10 +40,14 @@ $(document).ready(function(){
 	var currentBalance= 0;
 	currentBalance = parseFloat($('#accountList').find('option:selected').attr('id'));
 	var currentAccType=  $('#accountList').find('option:selected').attr('data-accType');
+	var minBalance = parseFloat($('#accountList').find('option:selected').attr('data-minBalance'));
 	//console.log(currentBalance + "     " + currentAccType);
+	
 	$('#accountList').on('change', function(){
 		currentBalance = parseFloat($(this).find('option:selected').attr('id'));	
 		currentAccType = $(this).find('option:selected').attr('data-accType');
+		minBalance = parseFloat($(this).find('option:selected').attr('data-minBalance'));
+
 		//console.log(currentBalance + "     " + currentAccType);
 		$('#withdrawAmount').val("");
 	});
@@ -51,11 +55,11 @@ $(document).ready(function(){
 	$('#withdrawAmount').on('keyup', function(){
 		var amount = parseFloat($(this).val());
 	//	console.log(amount   + "   ajsdhc - " + (amount > currentBalance));
-		if(amount > currentBalance){
-			alert("Amount entered is greater than the Minimum Balance.");
-		}
-		if((currentAccType == 1) && (currentBalance - amount < 1000)){
-			alert("Minimum Balance of Rs.1000 should be maintained.");
+		//if(amount > currentBalance){
+		//	alert("Amount entered is greater than the Minimum Balance.");
+		//}
+		if((currentBalance - amount < minBalance)){
+			alert("Minimum Balance of Rs." + minBalance +" should be maintained.");
 		}
 	});
 	
@@ -70,7 +74,6 @@ $(document).ready(function(){
   	
   	<div class="col-9">
   	<div class="row">
-  		<jsp:include page="CustomerHeader.jsp" /> 
   	</div>
   
   <div class="row">
@@ -80,10 +83,11 @@ $(document).ready(function(){
  <%
 String customerid=(String)session.getAttribute("customerid");
 String branchid=(String)session.getAttribute("branchid");
-ArrayList<Account> accounts = AccountDAO.getAccountsForCustomer(Integer.parseInt(customerid), Integer.parseInt(branchid), MenuMethods.GetAccountType.SAVINGS_AND_CURRENT);  
+ArrayList<Account> accounts = AccountDAO.getAccountsForCustomer(Integer.parseInt(customerid), MenuMethods.GetAccountType.SAVINGS_AND_CURRENT);  
 request.setAttribute("accounts",accounts);  
 %>  
 	<form action="WithdrawController" method="post">
+	<div>
 	<br><br><h3>WITHDRAW</h3><br>
 	
 	<div class="row">
@@ -93,12 +97,12 @@ request.setAttribute("accounts",accounts);
 		<div class="col-6">
 			<select name="Accountnumber" id="accountList">
 				<c:forEach items="${accounts}" var="account"> 
-					<option value="${account.getAccountNumber()}" id="${account.getAccountBalance()}" data-accType="${account.getAccountType()}">${account.getAccountNumber()}-${account.getAccountName()}</option><br><br>
+					<option value="${account.getAccountNumber()}" id="${account.getAccountBalance()}" data-accType="${account.getAccountType()}" data-minBalance="${account.getMinimumBalance()}">${account.getAccountNumber()}-${account.getAccountName()}</option><br><br>
 				</c:forEach>
 			</select>
 		</div>
 	</div>
-	
+	<br>
 	<div class="row">
 		<div class="col-6">
 			<p>Enter Withdrawal Amount: </p>
@@ -107,7 +111,7 @@ request.setAttribute("accounts",accounts);
 			<input type="text" placeholder="Amount" id="withdrawAmount" name="amount"><br>
 		</div>
 	</div>
-	
+	<br>
 	<div class="row">
 		<div class="col-6">
 			<p>Enter Message : </p>
@@ -116,12 +120,22 @@ request.setAttribute("accounts",accounts);
 			<input type="text" placeholder="Message" name="description"><br>
 		</div>
 	</div>
-    <input type="submit" value="Withdraw" />
+	<br>
+    
+    <div class="row">
+			<div class="col-6">
+				<input type="submit" value="Withdraw" />
+			</div>
+			<div class="col-6">
+				<input type="submit" form="cancelform" value="Cancel"/>
+			</div>	
+	</div>
+	</div>
     <p>${param.message}</p>
-    </form>
+	</form>
 	
-	
- 
+	<form id="cancelform" action="CustomerDashboard.jsp"></form>
+    
   </div>
   </div>
 </div>

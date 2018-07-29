@@ -24,7 +24,6 @@ public class WithdrawController extends HttpServlet {
 		
 		HttpSession session = request.getSession();
 		String customerID = (String)session.getAttribute("customerid");
-		String branchID = (String)session.getAttribute("branchid");
 		
 		int transactionAccountNumber1 = Integer.parseInt(accountNumber);		
 		double transactionAmount = Double.parseDouble(amount);
@@ -32,14 +31,14 @@ public class WithdrawController extends HttpServlet {
 		int transactionAccountNumber2 = 0, transactionSubType = 0, transactionType = 2;
 		String message = null;
 		
-		Withdraw newWithdrawal = new Withdraw(transactionAmount, accountBalance, Integer.parseInt(customerID), Integer.parseInt(branchID), transactionAccountNumber1, transactionAccountNumber2, transactionType, transactionSubType, null, description);
+		Withdraw newWithdrawal = new Withdraw(transactionAmount, accountBalance, Integer.parseInt(customerID), transactionAccountNumber1, transactionAccountNumber2, transactionType, transactionSubType, null, description);
 		if(!newWithdrawal.withDraw()) {
 			System.out.println("WithDraw Failed !!!!!!");
 			return;
 		}
 		message = "Succefully Withdrawed!!!";
 		
-		response.sendRedirect("Deposit.jsp?message=" + URLEncoder.encode(message, "UTF-8"));
+		response.sendRedirect("Withdraw.jsp?message=" + URLEncoder.encode(message, "UTF-8"));
 		
 		
 	}

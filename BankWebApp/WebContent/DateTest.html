@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" href="jquery-ui-1.12.1.custom/jquery-ui.min.css">
+<script src="jquery-ui-1.12.1.custom/external/jquery/jquery.js"></script>
+<script src="jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+
+
+<title>Insert title here</title>
+</head>
+<body>
+
+<script>
+$(document).ready(function(){
+	$( "#date" ).datepicker({
+		dateFormat: 'yy-mm-dd',
+        autoclose: true,
+        maxDate : new Date(),
+        changeYear: true,
+        onSelect: function(date) {
+            $("#todate").datepicker('option', 'minDate', date);
+          }
+	});	
+	var fromDate=0;
+	alert('hi');
+	$("#date").on('change',function(){
+         fromDate = $(this).val();
+         alert('hi');
+         
+	});
+	$( "#todate" ).datepicker({
+		dateFormat: 'yy-mm-dd',
+        autoclose: true,
+        changeYear: true,
+        maxDate : new Date()
+	});	
+});
+
+</script>
+
+<input type="text" name="date" id="date">
+<input type="text" name="todate" id="todate">
+</body>
+</html>

@@ -27,7 +27,7 @@ body {
 	<input type="text" placeholder="Branch Address" name="branchaddress"><br><br>
     <input type="submit" value="Submit" />
 
-    </form>
+</form>
 </div>
 </body>
 </html>

@@ -5,10 +5,10 @@ import com.bankDAO.TransactionDAO;
 
 public class Loan extends Transaction{
 
-	public Loan(double transactionAmount, double accountBalance, int customerID, int branchID,
+	public Loan(double transactionAmount, double accountBalance, int customerID,
 			int transactionAccountNumber1, int transactionAccountNumber2, int transactionType, int transactionSubType,
 			String transactionDateTime, String description) {
-		super(transactionAmount, accountBalance, customerID, branchID, transactionAccountNumber1, transactionAccountNumber2,
+		super(transactionAmount, accountBalance, customerID, transactionAccountNumber1, transactionAccountNumber2,
 				transactionType, transactionSubType, transactionDateTime, description);
 	}
 	

@@ -19,27 +19,37 @@ public class LoginController extends HttpServlet {
 		String username = request.getParameter("userid");
 		String password = request.getParameter("password");
 		
-		 HttpSession session = request.getSession(); 
-		 session.setAttribute("customerid", username);
-		 
+		System.out.println(username);
 		
 		if(username.equals("admin") || username.equals("Admin")) {
 			if(password.equals("admin")) {
-				RequestDispatcher rd = request.getRequestDispatcher("AdminPage.jsp");
-				rd.forward(request, response);
+				
+				HttpSession session = request.getSession(); 
+				session.setAttribute("customerid", "admin");
+				response.sendRedirect("Branch.jsp");
+			}
+			else {
+				
 			}
 		}
 		else {
 			CustomerDAO customerdao = new CustomerDAO();
 			if(!customerdao.validateCustomerPassword(Integer.parseInt(username), password)) {
-				System.out.println("WRONG CREDENTIALS");
-			};
+				
+				request.setAttribute("message", "Invalid Username/Password");
+				RequestDispatcher rd = request.getRequestDispatcher("CustomerLogin.jsp");
+				rd.forward(request, response);
+			}
+			else {
 			Customer logginCustomer = customerdao.getCustomerDetails(Integer.parseInt(username));
+			
+			HttpSession session = request.getSession(); 
+			session.setAttribute("customerid", username);
 			session.setAttribute("customerfname", logginCustomer.getCustomerFirstName());
 			session.setAttribute("customerlname", logginCustomer.getCustomerLastName());
 			
-			RequestDispatcher rd = request.getRequestDispatcher("CustomerAccounts.jsp");
-			rd.forward(request, response);
+			response.sendRedirect("CustomerDashboard.jsp");
+			}
 		}
 		
 	}

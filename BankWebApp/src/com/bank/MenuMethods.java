@@ -77,11 +77,11 @@ public class MenuMethods {
 		 Customer newCustomer = new Customer(customerFirstName, customerLastName, address, phoneNumber, dateOfBirth);
 		 
 		 CustomerDAO customerdao = new CustomerDAO();
-		 if(!customerdao.addCustomer(newCustomer)) {
+		/* if(!customerdao.addCustomer(newCustomer)) {
 			 System.out.println("Adding Customer Falied");
 			 return;
 		 }
-		 System.out.println("Successfully Added Customer");
+		 System.out.println("Successfully Added Customer");*/
 		 
 		 addCustomerPassword();
 	}
@@ -495,9 +495,6 @@ public class MenuMethods {
 			//ArrayList<Transaction> transactionHistory = transactiondao.getTransactionHistory(customerID, accountNumber);
 			displayTransactionReportHeader(transactionReportHeader);
 			//displayTransactions(transactionHistory);
-			
-			
-			
 				
 		}
 		

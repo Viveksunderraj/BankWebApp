@@ -26,7 +26,9 @@ public class DepositController extends HttpServlet {
 		
 		HttpSession session = request.getSession();
 		String customerID = (String)session.getAttribute("customerid");
-		String branchID = (String)session.getAttribute("branchid");
+		
+		
+		System.out.println(accountNumber + " " + " " + amount + " " + description);
 		
 		int transactionAccountNumber1 = Integer.parseInt(accountNumber);		
 		double transactionAmount = Double.parseDouble(amount);
@@ -35,7 +37,7 @@ public class DepositController extends HttpServlet {
 		
 		String message = null;
 		
-		Deposit newDeposit = new Deposit(transactionAmount, accountBalance, Integer.parseInt(customerID), Integer.parseInt(branchID),transactionAccountNumber1, transactionAccountNumber2, transactionType, transactionSubType, null, description);
+		Deposit newDeposit = new Deposit(transactionAmount, accountBalance, Integer.parseInt(customerID), transactionAccountNumber1, transactionAccountNumber2, transactionType, transactionSubType, null, description);
 		if(!newDeposit.deposit()) {
 			System.out.println("Deposit Failed !!!!!!");
 			return;

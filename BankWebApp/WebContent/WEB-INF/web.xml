@@ -73,7 +73,6 @@
     <servlet-name>WithdrawController</servlet-name>
     <url-pattern>/WithdrawController</url-pattern>
   </servlet-mapping>
-  
   <servlet>
     <servlet-name>TransactionHistory</servlet-name>
     <servlet-class>TransactionHistory</servlet-class>
@@ -82,4 +81,81 @@
     <servlet-name>TransactionHistory</servlet-name>
     <url-pattern>/TransactionHistory</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>AdminLogoutController</servlet-name>
+    <servlet-class>AdminLogoutController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AdminLogoutController</servlet-name>
+    <url-pattern>/AdminLogoutController</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>TransferBetweenAccountsController</servlet-name>
+    <servlet-class>TransferBetweenAccountsController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TransferBetweenAccountsController</servlet-name>
+    <url-pattern>/TransferBetweenAccountsController</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>TransferWithinBankController</servlet-name>
+    <servlet-class>TransferWithinBankController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TransferWithinBankController</servlet-name>
+    <url-pattern>/TransferWithinBankController</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>NEFTTransferController</servlet-name>
+    <servlet-class>NEFTTransferController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>NEFTTransferController</servlet-name>
+    <url-pattern>/NEFTTransferController</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>AddBeneficiaryController</servlet-name>
+    <servlet-class>AddBeneficiaryController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddBeneficiaryController</servlet-name>
+    <url-pattern>/AddBeneficiaryController</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>CustomerLogoutController</servlet-name>
+    <servlet-class>CustomerLogoutController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CustomerLogoutController</servlet-name>
+    <url-pattern>/CustomerLogoutController</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>AvailLoanController</servlet-name>
+    <servlet-class>AvailLoanController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AvailLoanController</servlet-name>
+    <url-pattern>/AvailLoanController</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>RepayLoanController</servlet-name>
+    <servlet-class>RepayLoanController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>RepayLoanController</servlet-name>
+    <url-pattern>/RepayLoanController</url-pattern>
+  </servlet-mapping>
+  
+  
+  
+  
+  <filter>
+    <filter-name>AuthenticationFilter</filter-name>
+    <filter-class>AuthenticationFilter</filter-class>
+  </filter>
+  
+ <filter-mapping>
+    <filter-name>AuthenticationFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 </web-app>

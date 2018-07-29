@@ -46,7 +46,7 @@ $(document).ready(function(){
   	
   	<div class="col-9">
   	<div class="row">
-  		<jsp:include page="CustomerHeader.jsp" /> 
+  		
   	</div>
   
   <div class="row">
@@ -55,13 +55,16 @@ $(document).ready(function(){
   <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>  
  <%
 String customerid=(String)session.getAttribute("customerid");
-String branchid=(String)session.getAttribute("branchid");
-ArrayList<Account> accounts = AccountDAO.getAccountsForCustomer(Integer.parseInt(customerid), Integer.parseInt(branchid), MenuMethods.GetAccountType.SAVINGS_AND_CURRENT);  
+
+if(customerid != null)
+{
+ArrayList<Account> accounts = AccountDAO.getAccountsForCustomer(Integer.parseInt(customerid), MenuMethods.GetAccountType.SAVINGS_AND_CURRENT);  
 request.setAttribute("accounts",accounts);  
+}
 %>  
-	<form action="DepositController" method="post">
+	<form id="depositform" action="DepositController" method="post">
+	<div>
 	<br><br><h3>DEPOSIT</h3><br>
-	
 	<div class="row">
 		<div class="col-6">
 			<p>Select An Account : </p>
@@ -69,12 +72,12 @@ request.setAttribute("accounts",accounts);
 		<div class="col-6">
 			<select name="Accountnumber">
 				<c:forEach items="${accounts}" var="account"> 
-					<option value="${account.getAccountNumber()}">${account.getAccountNumber()}-${account.getAccountName()}</option><br><br>
+					<option value="${account.getAccountNumber()}">${account.getAccountNumber()}-${account.getAccountName()}</option>
 				</c:forEach>
 			</select>
 		</div>
 	</div>
-	
+	<br>
 	<div class="row">
 		<div class="col-6">
 			<p>Enter the Amount : </p>
@@ -83,7 +86,7 @@ request.setAttribute("accounts",accounts);
 			<input type="text" placeholder="Amount" name="amount"><br>
 		</div>
 	</div>
-	
+	<br>
 	<div class="row">
 		<div class="col-6">
 			<p>Enter Message : </p>
@@ -92,12 +95,22 @@ request.setAttribute("accounts",accounts);
 			<input type="text" placeholder="Message" name="description"><br>
 		</div>
 	</div>
-    <input type="submit" value="Deposit" />
+	<br>
+	<div class="row">
+			<div class="col-6">
+				<input type="submit" value="Deposit" />
+			</div>
+			<div class="col-6">
+				<input type="submit" form="cancelform" value="Cancel"/>
+			</div>	
+	</div>	
+   
+   </div> 	
+    <br>
     <p>${param.message}</p>
     </form>
 	
-	
- 
+	<form id="cancelform" action="CustomerDashboard.jsp"></form>
   </div>
   </div>
 </div>

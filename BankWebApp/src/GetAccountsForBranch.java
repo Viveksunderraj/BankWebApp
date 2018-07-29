@@ -26,7 +26,7 @@ public class GetAccountsForBranch extends HttpServlet {
 		HttpSession session = request.getSession();
 		String customerID = (String)session.getAttribute("customerid");
 		
-		session.setAttribute("branchid", branchID);
+		//session.setAttribute("branchid", branchID);
 		
 		ArrayList<Account> accountList = AccountDAO.getAccountsForCustomer(Integer.parseInt(customerID), Integer.parseInt(branchID));
 		
@@ -34,7 +34,7 @@ public class GetAccountsForBranch extends HttpServlet {
 		
 		
 		RequestDispatcher rd = request.getRequestDispatcher("CustomerAccounts.jsp");
-		rd.forward(request, response);
+		rd.include(request, response);
 
 	}
 

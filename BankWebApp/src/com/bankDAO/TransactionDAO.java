@@ -14,19 +14,19 @@ public class TransactionDAO {
 	
 	public static boolean addTransactionDetails(Transaction newTransaction) {
 		
-		String sql = "insert into Transactions(TransactionID, TransactionType, BranchID, CustomerID, TransactionAccountNumber1, TransactionAccountNumber2, Amount, CurrentBalance, TransactionDateTIme, TransactionSubType, Description) values(null,?,?,?,?,?,?,?,NOW(),?,?)";
+		String sql = "insert into Transactions(TransactionID, TransactionType, CustomerID, TransactionAccountNumber1, TransactionAccountNumber2, Amount, CurrentBalance, TransactionDateTIme, TransactionSubType, Description) values(null,?,?,?,?,?,?,NOW(),?,?)";
 		
 		try(Connection con = BankApplication.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);) {
 			pstmt.setInt(1, newTransaction.getTransactionType());
-			pstmt.setInt(2, newTransaction.getBranchID());
-			pstmt.setInt(3, newTransaction.getCustomerID());
-			pstmt.setInt(4, newTransaction.getTransactionAccountNumber1());
-			pstmt.setInt(5, newTransaction.getTransactionAccountNumber2());
-			pstmt.setDouble(6, newTransaction.getTransactionAmount());
-			pstmt.setDouble(7, newTransaction.getAccountBalance());
-			pstmt.setInt(8, newTransaction.getTransactionSubType());
-			pstmt.setString(9, newTransaction.getDescription());
+			//pstmt.setInt(2, newTransaction.getBranchID());
+			pstmt.setInt(2, newTransaction.getCustomerID());
+			pstmt.setInt(3, newTransaction.getTransactionAccountNumber1());
+			pstmt.setInt(4, newTransaction.getTransactionAccountNumber2());
+			pstmt.setDouble(5, newTransaction.getTransactionAmount());
+			pstmt.setDouble(6, newTransaction.getAccountBalance());
+			pstmt.setInt(7, newTransaction.getTransactionSubType());
+			pstmt.setString(8, newTransaction.getDescription());
 			
 			int affectedRows = pstmt.executeUpdate();
 			if(affectedRows == 1) {
@@ -68,14 +68,13 @@ public class TransactionDAO {
 		
 	}
 	
-	public ArrayList<Transaction> getTransactionHistory(int customerID, int accountNumber, int branchID) {
-		String sql = "SELECT * from transactions as tran INNER JOIN transactionType as trantype ON tran.transactionType=trantype.transactionType where (CustomerID=?) and (transactionAccountNumber1=?) and (BranchID=?) ORDER BY TransactionDateTIme DESC, TransactionID DESC";
+	public ArrayList<Transaction> getTransactionHistory(int customerID, int accountNumber) {
+		String sql = "SELECT * from transactions as tran INNER JOIN transactionType as trantype ON tran.transactionType=trantype.transactionType where (transactionAccountNumber1=?) ORDER BY TransactionDateTIme DESC, TransactionID DESC";
 		
 		try(Connection con = BankApplication.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);) {
-			pstmt.setInt(1, customerID);
-			pstmt.setInt(2, accountNumber);
-			pstmt.setInt(3, branchID);
+			//pstmt.setInt(1, customerID);
+			pstmt.setInt(1, accountNumber);
 			try(ResultSet rs = pstmt.executeQuery();) {
 				ArrayList<Transaction> transactionHistory = new ArrayList<>();
 
@@ -83,7 +82,7 @@ public class TransactionDAO {
 					Transaction transaction = new Transaction();
 					transaction.setTransactionID(rs.getInt("transactionID"));
 					transaction.setAccountBalance(rs.getDouble("CurrentBalance"));
-					transaction.setBranchID(rs.getInt("branchid"));
+					//transaction.setBranchID(rs.getInt("branchid"));
 					transaction.setCustomerID(rs.getInt("customerid"));
 					transaction.setDescription(rs.getString("Description"));
 					transaction.setTransactionAccountNumber1(rs.getInt("TransactionAccountNumber1"));
@@ -107,5 +106,47 @@ public class TransactionDAO {
 		}
 		return null;
 	}
+	
+	public ArrayList<Transaction> getTransactionHistoryDateWise(int accountNumber, String fromDate, String toDate) {
+		String sql = "SELECT * from transactions as tran INNER JOIN transactionType as trantype ON tran.transactionType=trantype.transactionType where (transactionAccountNumber1=?) and TransactionDateTIme BETWEEN ? and ? ORDER BY TransactionDateTIme DESC, TransactionID DESC";
+		
+		try(Connection con = BankApplication.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql);) {
+			//pstmt.setInt(1, customerID);
+			pstmt.setInt(1, accountNumber);
+			pstmt.setString(2, fromDate);
+			pstmt.setString(3, toDate);
+			try(ResultSet rs = pstmt.executeQuery();) {
+				ArrayList<Transaction> transactionHistory = new ArrayList<>();
+
+				while(rs.next()) {
+					Transaction transaction = new Transaction();
+					transaction.setTransactionID(rs.getInt("transactionID"));
+					transaction.setAccountBalance(rs.getDouble("CurrentBalance"));
+					//transaction.setBranchID(rs.getInt("branchid"));
+					transaction.setCustomerID(rs.getInt("customerid"));
+					transaction.setDescription(rs.getString("Description"));
+					transaction.setTransactionAccountNumber1(rs.getInt("TransactionAccountNumber1"));
+					transaction.setTransactionAccountNumber2(rs.getInt("TransactionAccountNumber2"));
+					transaction.setTransactionAmount(rs.getDouble("Amount"));
+					transaction.setTransactionDateTime(rs.getString("TransactionDateTIme"));
+					transaction.setTransactionSubType(rs.getInt("TransactionSubType"));
+					transaction.setTransactionType(rs.getInt("TransactionType"));
+					transaction.setTransactionName(rs.getString("transactionname"));
+					
+					transactionHistory.add(transaction);
+				}
+				
+				return transactionHistory;
+			}
+			
+		}
+		catch(SQLException ex)
+		{
+			System.out.println(ex.getMessage() + "HELLO");
+		}
+		return null;
+	}
+	
 
 }

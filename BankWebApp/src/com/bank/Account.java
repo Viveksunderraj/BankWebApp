@@ -9,6 +9,7 @@ public class Account{
 	private double accountBalance;
 	private String accountName;
 	private String branchName;
+	private double minimumBalance;
 	
 	
 	public Account() {
@@ -100,6 +101,14 @@ public class Account{
 
 	public void setBranchName(String branchName) {
 		this.branchName = branchName;
+	}
+
+	public double getMinimumBalance() {
+		return minimumBalance;
+	}
+
+	public void setMinimumBalance(double minimumBalance) {
+		this.minimumBalance = minimumBalance;
 	}
 	 
 	 

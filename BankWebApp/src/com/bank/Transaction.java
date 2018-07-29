@@ -6,7 +6,7 @@ public class Transaction {
 	private double transactionAmount;
 	private double accountBalance;
 	private int customerID;
-	private int branchID;
+	//private int branchID;
 	private int transactionAccountNumber1, transactionAccountNumber2;
 	private int transactionType;
 	private int transactionSubType;
@@ -33,13 +33,13 @@ public class Transaction {
 	}
 
 
-	public Transaction(double transactionAmount, double accountBalance, int customerID, int branchID,
+	public Transaction(double transactionAmount, double accountBalance, int customerID,
 			int transactionAccountNumber1, int transactionAccountNumber2, int transactionType, int transactionSubType,
 			String transactionDateTime, String description) {
 		this.transactionAmount = transactionAmount;
 		this.accountBalance = accountBalance;
 		this.customerID = customerID;
-		this.branchID = branchID;
+		//this.branchID = branchID;
 		this.transactionAccountNumber1 = transactionAccountNumber1;
 		this.transactionAccountNumber2 = transactionAccountNumber2;
 		this.transactionType = transactionType;
@@ -83,13 +83,13 @@ public class Transaction {
 		this.customerID = customerID;
 	}
 
-	public int getBranchID() {
+	/*public int getBranchID() {
 		return branchID;
 	}
 
 	public void setBranchID(int branchID) {
 		this.branchID = branchID;
-	}
+	}*/
 
 	public int getTransactionAccountNumber1() {
 		return transactionAccountNumber1;

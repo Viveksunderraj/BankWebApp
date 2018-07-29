@@ -39,6 +39,15 @@ $(document).ready(function(){
 	$('#AddCustomer').addClass('active');
 });
 </script>
+<%@page import="com.bank.*,com.bankDAO.*,java.util.*"%>  
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%
+ArrayList<Branch> branchList = BranchDAO.getAllBranches();  
+request.setAttribute("branchList",branchList);
+
+ArrayList<AccountLookup> accountLookupList = AccountDAO.getAccountLookup();
+request.setAttribute("accountLookupList",accountLookupList);
+%>
   <div class="row">
   <div class="col-3">
  	<jsp:include page="AdminPage.jsp" />  
@@ -46,7 +55,7 @@ $(document).ready(function(){
   <div class="col-9 top">
   <div class=customer>
   <form action="AddCustomerController" method="post">
-	<h3>Add Customer</h3><br><br>
+	<h3>Add Customer</h3><br>
 	
 	<div class="row">
 		<div class="col-4">
@@ -89,10 +98,47 @@ $(document).ready(function(){
 			<p>Enter Your D.O.B : </p>
 		</div>
 		<div class="col-8">
-			<input type="text" placeholder="YYYY-MM-DD" required pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])/(?:30))|(?:(?:0[13578]|1[02])-31))" name="dateofbirth">
+			<input type="text" placeholder="YYYY-MM-DD" required pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])/(?:30))|(?:(?:0[13578]|1[02])-31))" name="dateofbirth"><br><br>
 		</div>
 	</div>
-		<br><br>
+	
+	<div class="row">
+		<div class="col-4">
+			<p>Enter Password : </p>
+		</div>
+		<div class="col-8">
+			<input type="password" placeholder="Password" name="customerpassword"><br><br>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-4">
+			<p>Select A Branch : </p>
+		</div>
+		<div class="col-8">
+			<select name="Branchid">
+				<c:forEach items="${branchList}" var="u"> 
+					<option value="${u.getBranchID()}">${u.getBranchName()}</option><br><br>
+				</c:forEach>
+			</select>
+		</div>
+	</div>
+	
+	
+	<div class="row">
+		<div class="col-4">
+			<p>Select An Account : </p>
+			</div>
+		<div class="col-8">
+			<select name="Accounttype">
+				<c:forEach items="${accountLookupList}" var="u"> 
+					<option value="${u.getAccountType()}">${u.getAccountName()}</option><br><br>
+				</c:forEach>
+			</select>
+		</div>
+	</div>
+	
+		<br>
     <input type="submit" value="Add Customer" />
     </form>
     <br>

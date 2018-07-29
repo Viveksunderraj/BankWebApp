@@ -35,14 +35,22 @@ color:#f2f2f2;
 $(document).ready(function(){
 	var branchid = $('#Branchid').attr('value');
 
-	
 	setSelectedIndex(document.getElementById('branchlist'),branchid);
 	
+	//$('#branchsubmit').click();
+	
+	$('#branchlist').on('change',function(){
+		var branchid = ($(this).find('option:selected').attr('value'));
+		
+		getAccountDetails(branchid);
+	});
+	
 });
+
+
 function setSelectedIndex(s, v) {
 
     for ( var i = 0; i < s.options.length; i++ ) {
-//console.log(s.options[i].value);
         if ( s.options[i].value == v ) {
 
             s.options[i].selected = true;
@@ -55,6 +63,42 @@ function setSelectedIndex(s, v) {
 
 }
 
+    
+function showAccount(branchid) {
+    	
+    	
+    var url = "CustomerAccounts.jsp?val="+branchid;
+    
+    if (branchid == "") {
+        document.getElementById("txtHint").innerHTML = "";
+        return;
+    }
+    
+	if(window.XMLHttpRequest){  
+		request = new XMLHttpRequest();  
+		}  
+		else if(window.ActiveXObject){  
+		request = new ActiveXObject("Microsoft.XMLHTTP");  
+		}  
+		  
+		try  
+		{  
+		request.onreadystatechange = getInfo;  
+		request.open("GET",url,true);  
+		request.send();  
+		}  
+		catch(e)  
+		{  
+		alert("Unable to connect to server");  
+		}  
+ }
+
+function getInfo(){  
+	if(request.readyState==4){  
+	var val=request.responseText;  
+	document.getElementById("txtHint").innerHTML = val;
+	}  
+}  
 
 </script>
 
@@ -62,7 +106,11 @@ function setSelectedIndex(s, v) {
 <div>
 <div class="row">
 <div class="col-11"> <h2>ZOHO BANK</h2></div>
-
+	<div class="row">
+  		<div class="col-3">
+ 			<jsp:include page="CustomerPage.jsp" />  
+  		</div>
+  	</div>
 
 <h3>
 <%
@@ -90,28 +138,27 @@ out.print("Welcome " + customerfname + " " + customerlname + ", Customer ID = " 
 String branchid=(String)session.getAttribute("branchid");
 ArrayList<Account> branchList = AccountDAO.getDistinctBranchesForCustomer(custid);
 
-
-request.setAttribute("branchList",branchList);
+session.setAttribute("branchList",branchList);
 %>  
 <input type="hidden" value="${branchid}" id="Branchid"/>
-<form action="GetAccountsForBranch" method="post">
+<form action="CustomerAccounts.jsp" method="post" id="Branchform">
 <div class="row">
 		<div class="col-6">
 			<p>Select A Branch : </p>
 		</div>
 		<div class="col-5">
-			<select name="Branchid" id="branchlist">
+			<select name="Branchid" id="branchlist" onchange="showAccount(this.value)">
 				<c:forEach items="${branchList}" var="u"> 
 					<option value="${u.getBranchID()}">${u.getBranchName()}</option>
 				</c:forEach>
 			</select>
 		</div>
-		<div class="col-1">
-			<input type="submit" value="Ok"/>
-		</div>
 </div>
-</div>
+
+<div id="txtHint"><b>Person info will be listed here...</b></div>
+
 </form>
+</div>
 
 </body>
 </html>
